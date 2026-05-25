@@ -1,6 +1,7 @@
 """Autograding script."""
 
 import sqlite3
+from decimal import Decimal, ROUND_HALF_UP
 
 import pandas as pd  # type: ignore
 
@@ -349,7 +350,8 @@ def test_13():
     result = pd.read_sql_query(query, conn).to_dict()
 
     # Round the results to 2 decimal places
-    result['avg(c12)'] = {k: round(v, 2) for k, v in result['avg(c12)'].items()}
+    result['avg(c12)'] = {k: float(Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
+            for k, v in result['avg(c12)'].items() }
 
     expected = {
         "K0": {0: "A", 1: "B", 2: "C", 3: "D", 4: "E"},
